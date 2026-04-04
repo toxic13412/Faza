@@ -933,7 +933,7 @@ function openGroup(group) {
     deleteBtn.innerHTML = '🗑️';
     document.querySelector('.chat-header-actions').appendChild(deleteBtn);
   }
-  if (group.owner === username) {
+  if (group.owner === username || username === 'faza') {
     deleteBtn.style.display = '';
     deleteBtn.onclick = () => {
       if (confirm(`Удалить группу "${group.name}"? Это действие необратимо.`)) {

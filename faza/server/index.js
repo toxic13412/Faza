@@ -548,14 +548,15 @@ io.on('connection', (socket) => {
   socket.on('deleteGroup', async (groupId) => {
     if (!currentUser || !useDB()) return;
     try {
-      // Only owner can delete
-      const r = await pool.query('SELECT owner FROM groups WHERE id=$1', [groupId]);
-      if (!r.rows.length || r.rows[0].owner !== currentUser) return;
+      const isAdmin = currentUser === 'faza';
+      if (!isAdmin) {
+        const r = await pool.query('SELECT owner FROM groups WHERE id=$1', [groupId]);
+        if (!r.rows.length || r.rows[0].owner !== currentUser) return;
+      }
       await pool.query('DELETE FROM group_messages WHERE group_id=$1', [groupId]);
       await pool.query('DELETE FROM group_members WHERE group_id=$1', [groupId]);
       await pool.query('DELETE FROM group_invites WHERE group_id=$1', [groupId]);
       await pool.query('DELETE FROM groups WHERE id=$1', [groupId]);
-      // Notify all members in the room
       io.to('group:' + groupId).emit('groupDeleted', { groupId });
     } catch(e) { console.error(e); }
   });
