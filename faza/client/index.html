@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-box">
+    <div class="logo"><span class="logo-icon">⚡</span><span class="logo-text">Faza</span></div>
+    <p class="login-sub">Общайся. Играй. Будь на связи.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login">Войти</button>
+      <button class="auth-tab" id="tab-register">Регистрация</button>
+    </div>
+    <div id="form-login">
+      <div class="input-group"><span class="input-icon">👤</span><input id="login-username" type="text" placeholder="Имя пользователя" maxlength="24"/></div>
+      <div class="input-group"><span class="input-icon">🔒</span><input id="login-password" type="password" placeholder="Пароль"/></div>
+      <button id="login-btn" class="btn-primary">Войти</button>
+    </div>
+    <div id="form-register" class="hidden">
+      <div class="avatar-pick">
+        <div class="avatar-preview" id="login-avatar-preview">👤</div>
+        <label class="avatar-upload-btn" for="login-avatar-input">� Выбрать фото</label>
+        <input type="file" id="login-avatar-input" accept="image/*" style="display:none"/>
+      </div>
+      <div class="input-group"><span class="input-icon">👤</span><input id="reg-username" type="text" placeholder="Имя пользователя" maxlength="24"/></div>
+      <div class="input-group"><span class="input-icon">🔒</span><input id="reg-password" type="password" placeholder="Пароль (мин. 4 символа)"/></div>
+      <div class="input-group"><span class="input-icon">🔒</span><input id="reg-password2" type="password" placeholder="Повтори пароль"/></div>
+      <button id="reg-btn" class="btn-primary">Создать аккаунт</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" class="hidden">
+
+  <!-- Desktop icon rail -->
+  <nav class="icon-rail">
+    <div class="rail-logo" title="Faza">⚡</div>
+    <div class="rail-divider"></div>
+    <button class="rail-btn active" id="rail-dms" title="Личные сообщения">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+    </button>
+    <button class="rail-btn" id="rail-server" title="Сервер">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+    </button>
+    <div class="rail-divider"></div>
+    <div class="rail-user-avatar" id="rail-user-avatar" title="Профиль"></div>
+  </nav>
+
+  <!-- Mobile server rail -->
+  <nav class="mob-rail" id="mob-rail">
+    <div class="mob-rail-logo" id="mob-rail-dms" title="ЛС">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+    </div>
+    <div class="mob-rail-divider"></div>
+    <div class="mob-rail-btn" id="mob-rail-server" title="Сервер">⚡</div>
+  </nav>
+
+  <!-- Main content wrapper (mobile) -->
+  <div class="mob-main" id="mob-main">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close-btn" id="sidebar-close" aria-label="Закрыть">✕</button>
+
+    <!-- Mobile DM header -->
+    <div class="mob-dm-header">
+      <div class="mob-dm-title">Сообщения</div>
+      <div class="mob-search-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" id="dm-search" placeholder="Найти или начать беседу"/>
+      </div>
+      <div class="mob-add-friend-bar" id="mob-add-friend-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Добавить друзей
+      </div>
+    </div>
+    <!-- DM view -->
+    <div id="view-dms" class="sidebar-view">
+      <div class="sidebar-search">
+        <input type="text" id="dm-search" placeholder="Найти или начать беседу"/>
+      </div>
+      <div class="sidebar-section-label">
+        Личные сообщения
+        <button class="add-friend-btn" id="add-friend-btn" title="Новое ЛС">+</button>
+      </div>
+      <ul id="friends-list" class="dm-list"></ul>
+      <div class="sidebar-section-label">
+        Группы
+        <button class="add-friend-btn" id="create-group-btn" title="Создать группу">+</button>
+      </div>
+      <ul id="groups-list" class="dm-list"></ul>
+      <div class="sidebar-section-label">Запросы в друзья</div>
+      <ul id="friend-requests" class="dm-list"></ul>
+    </div>
+
+    <!-- Server view -->
+    <div id="view-server" class="sidebar-view hidden">
+      <div class="server-name-bar">
+        <span class="server-icon">⚡</span><span>Faza</span>
+        <div class="server-status"></div>
+      </div>
+      <div class="sidebar-section-label">Текстовые каналы <span class="section-icon">💬</span></div>
+      <ul id="text-channels" class="channel-list"></ul>
+      <div class="sidebar-section-label">Голосовые каналы <span class="section-icon">🔊</span></div>
+      <ul id="voice-channels" class="channel-list"></ul>
+      <div class="sidebar-section-label">Онлайн <span id="online-count" class="online-count">0</span></div>
+      <ul id="online-list" class="online-list"></ul>
+    </div>
+
+    <!-- User bar -->
+    <div class="user-bar">
+      <div class="user-avatar-wrap" id="user-avatar-wrap" title="Сменить аватарку">
+        <div class="user-avatar" id="user-avatar"></div>
+        <div class="avatar-overlay">✏️</div>
+        <input type="file" id="avatar-input" accept="image/*" style="display:none"/>
+      </div>
+      <div class="user-info">
+        <span id="user-name-display"></span>
+        <span class="user-status">● онлайн</span>
+      </div>
+      <button id="mute-btn" title="Микрофон">🎙️</button>
+      <button id="activity-btn" title="Установить активность">🎮</button>
+      <button id="ringtone-btn" title="Звук звонка">🔔</button>
+      <button id="logout-btn" title="Выйти">🚪</button>
+    </div>
+  </aside>
+
+  <!-- Chat area -->
+  <main class="chat-area" id="chat-area">
+    <div class="chat-header" id="chat-header">
+      <div class="chat-header-left">
+        <button class="mob-back-btn" id="mob-back-btn" aria-label="Назад">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <div class="chat-header-avatar" id="chat-header-avatar"></div>
+        <div class="chat-header-info">
+          <span id="channel-title">Выбери беседу</span>
+          <span class="chat-header-status" id="chat-header-status"></span>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="hdr-btn" id="call-btn" title="Голосовой звонок" style="display:none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.58.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/></svg>
+        </button>
+        <button class="hdr-btn" id="profile-toggle-btn" title="Профиль" style="display:none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </button>
+        <button class="hdr-btn" id="invite-btn" title="Пригласить" style="display:none">🔗</button>
+      </div>
+    </div>
+
+    <!-- Voice overlay -->
+    <div id="voice-overlay" class="voice-overlay hidden">
+      <div id="voice-overlay-users" class="vo-users"></div>
+      <div class="vo-controls">
+        <div class="vo-ctrl-group">
+          <button id="voice-mute-btn" class="vo-ctrl-btn" title="Микрофон">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v6a2 2 0 0 0 4 0V5a2 2 0 0 0-2-2zm-1 14.93V20H9v2h6v-2h-2v-2.07A7 7 0 0 0 19 11h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+          </button>
+          <button id="voice-deafen-btn" class="vo-ctrl-btn" title="Наушники">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0-9 9v5a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5v-1a7 7 0 0 1 14 0v1h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1a3 3 0 0 0 3-3v-5a9 9 0 0 0-9-9z"/></svg>
+          </button>
+          <button id="voice-denoise-btn" class="vo-ctrl-btn" title="Шумоподавление">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          </button>
+          <button id="voice-screen-btn" class="vo-ctrl-btn" title="Демонстрация экрана">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h7v2H7v2h10v-2h-4v-2h7a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 13H4V5h16v11z"/></svg>
+          </button>
+        </div>
+        <button id="voice-leave-btn" class="vo-ctrl-leave" title="Покинуть">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.58.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="voice-resize-handle" id="voice-resize-handle"></div>
+
+    <div class="chat-bottom" id="chat-bottom">
+      <div id="messages" class="messages">
+        <div class="messages-welcome hidden" id="messages-welcome">
+          <div class="welcome-icon">�</div>
+          <div class="welcome-text">Начало переписки с <strong id="welcome-channel-name"></strong></div>
+          <div class="welcome-sub">Это самое начало вашей истории.</div>
+        </div>
+      </div>
+      <div class="message-input-bar">
+        <div class="input-wrap">
+          <label class="img-btn" for="img-input" title="Прикрепить файл">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </label>
+          <input type="file" id="img-input" accept="image/*" style="display:none"/>
+          <input id="msg-input" type="text" placeholder="Выбери беседу..." disabled/>
+          <div class="input-actions">
+            <button class="input-action-btn" title="Фото">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+          </div>
+        </div>
+        <button id="send-btn" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Profile panel -->
+  <aside class="profile-panel hidden" id="profile-panel">
+    <div class="profile-banner" id="profile-banner"></div>
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <div class="profile-status-dot"></div>
+    </div>
+    <div class="profile-body">
+      <div class="profile-name" id="profile-name"></div>
+      <div class="profile-tag" id="profile-tag"></div>
+      <div class="profile-divider"></div>
+      <div class="profile-section-label">О себе</div>
+      <div class="profile-bio" id="profile-bio">Пользователь Faza</div>
+      <div class="profile-divider"></div>
+      <div class="profile-stat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <span>Общие серверы — 1</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-left:auto"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </div>
+      <div class="profile-stat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span id="mutual-friends">Общие друзья — 0</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-left:auto"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Modals -->
+<div id="add-friend-modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">Добавить друга</div>
+    <div class="input-group" style="width:100%"><span class="input-icon">👤</span><input id="add-friend-input" type="text" placeholder="Имя пользователя" maxlength="24"/></div>
+    <div class="modal-actions">
+      <button id="add-friend-cancel">Отмена</button>
+      <button id="add-friend-confirm" class="primary">Отправить запрос</button>
+    </div>
+  </div>
+</div>
+
+<div id="create-group-modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">Создать группу</div>
+    <div class="input-group" style="width:100%"><span class="input-icon">👥</span><input id="group-name-input" type="text" placeholder="Название группы" maxlength="32"/></div>
+    <div class="modal-actions">
+      <button id="create-group-cancel">Отмена</button>
+      <button id="create-group-confirm" class="primary">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ringtone modal -->
+<div id="ringtone-modal" class="modal hidden">
+  <div class="modal-box" style="min-width:300px">
+    <div class="modal-title">🔔 Звук звонка</div>
+    <div class="ringtone-preview" id="ringtone-preview">Стандартный звук</div>
+    <div class="ringtone-options">
+      <button class="ringtone-opt active" data-ringtone="default">🎵 Стандартный</button>
+      <button class="ringtone-opt" data-ringtone="ring1">🔔 Звонок 1</button>
+      <button class="ringtone-opt" data-ringtone="ring2">🔔 Звонок 2</button>
+      <button class="ringtone-opt" data-ringtone="custom">📁 Свой файл</button>
+    </div>
+    <div id="ringtone-file-wrap" style="display:none;width:100%">
+      <label class="avatar-upload-btn" for="ringtone-file-input" style="width:100%;text-align:center;display:block">
+        Выбрать MP3 / WAV
+      </label>
+      <input type="file" id="ringtone-file-input" accept="audio/*" style="display:none"/>
+      <div id="ringtone-file-name" style="font-size:.78rem;color:var(--text-m);text-align:center;margin-top:4px"></div>
+    </div>
+    <div class="modal-actions">
+      <button id="ringtone-test">▶ Тест</button>
+      <button id="ringtone-cancel">Отмена</button>
+      <button id="ringtone-confirm" class="primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Activity modal -->
+<div id="activity-modal" class="modal hidden">
+  <div class="modal-box" style="min-width:320px">
+    <div class="modal-title">Установить активность</div>
+    <div class="activity-presets">
+      <button class="activity-preset" data-emoji="🎮" data-type="playing">🎮 Играю</button>
+      <button class="activity-preset" data-emoji="🎵" data-type="listening">🎵 Слушаю</button>
+      <button class="activity-preset" data-emoji="📺" data-type="watching">📺 Смотрю</button>
+      <button class="activity-preset" data-emoji="💻" data-type="coding">💻 Кодю</button>
+      <button class="activity-preset" data-emoji="😴" data-type="idle">😴 AFK</button>
+    </div>
+    <div class="input-group" style="width:100%">
+      <span class="input-icon" id="activity-emoji-preview">🎮</span>
+      <input id="activity-name-input" type="text" placeholder="Название (напр. CS2)" maxlength="64"/>
+    </div>
+    <div class="input-group" style="width:100%">
+      <span class="input-icon">📝</span>
+      <input id="activity-details-input" type="text" placeholder="Детали (необязательно)" maxlength="64"/>
+    </div>
+    <div class="modal-actions">
+      <button id="activity-clear">Очистить</button>
+      <button id="activity-cancel">Отмена</button>
+      <button id="activity-confirm" class="primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="avatar-modal" class="modal hidden">
+  <div class="modal-box" style="min-width:320px">
+    <div class="modal-title">Выбрать аватарку</div>
+    <div class="crop-container">
+      <div class="crop-canvas-wrap" id="crop-canvas-wrap">
+        <img id="crop-img" src="" alt="" draggable="false"/>
+        <div class="crop-circle" id="crop-circle"></div>
+      </div>
+      <div class="crop-controls">
+        <label class="crop-label">Масштаб</label>
+        <input type="range" id="crop-scale" min="0.5" max="3" step="0.01" value="1"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button id="avatar-cancel">Отмена</button>
+      <button id="avatar-confirm" class="primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="audio-container" style="display:none"></div>
+
+<!-- Mobile bottom navigation -->
+<nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+  <button class="mob-nav-btn active" id="mob-btn-chat">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+    <span>Главная</span>
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-notif">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+    <span>Уведомления</span>
+  </button>
+  <button class="mob-nav-btn" id="mob-btn-profile">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <span>Вы</span>
+  </button>
+</nav>
+
+  </div><!-- /mob-main -->
+
+<div id="lightbox" class="lightbox hidden">
+  <img id="lightbox-img" src="" alt=""/>
+  <button id="lightbox-close">✕</button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
