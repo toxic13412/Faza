@@ -671,7 +671,19 @@ function addVoiceUser(id, name, avatar, isMe) {
   const avDiv = document.createElement('div'); avDiv.className = 'vo-user-avatar';
   setAvatarEl(avDiv, name, avatar);
   const nm = document.createElement('div'); nm.className = 'vo-user-name'; nm.textContent = isMe ? name + ' (я)' : name;
-  el.append(avDiv, nm); voiceOverlayUsers.appendChild(el);
+  el.append(avDiv, nm);
+  // Volume slider for remote users
+  if (!isMe) {
+    const slider = document.createElement('input');
+    slider.type = 'range'; slider.min = 0; slider.max = 200; slider.value = 100;
+    slider.className = 'vo-user-volume'; slider.title = 'Громкость';
+    slider.addEventListener('input', () => {
+      const audio = document.getElementById('audio-' + id);
+      if (audio) audio.volume = Math.min(slider.value / 100, 2);
+    });
+    el.appendChild(slider);
+  }
+  voiceOverlayUsers.appendChild(el);
   voiceUsers[id] = { name, el };
 }
 function removeVoiceUser(id) { stopMonitoring(id); voiceUsers[id]?.el.remove(); delete voiceUsers[id]; }
@@ -1663,3 +1675,48 @@ if (window.fazaDesktop) {
     startTimestamp: Date.now()
   });
 }
+
+// ---- Volume controls ----
+const micVolumeSlider = document.getElementById('mic-volume');
+let micGainNode = null;
+let micGainCtx = null;
+
+// Mic volume via GainNode
+micVolumeSlider?.addEventListener('input', () => {
+  const val = micVolumeSlider.value / 100;
+  if (micGainNode) {
+    micGainNode.gain.value = val;
+  }
+});
+
+function applyMicVolume(stream) {
+  if (!stream) return stream;
+  try {
+    micGainCtx = micGainCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const source = micGainCtx.createMediaStreamSource(stream);
+    micGainNode = micGainCtx.createGain();
+    micGainNode.gain.value = (micVolumeSlider?.value || 100) / 100;
+    const dest = micGainCtx.createMediaStreamDestination();
+    source.connect(micGainNode);
+    micGainNode.connect(dest);
+    // Merge processed audio with original stream metadata
+    return dest.stream;
+  } catch {
+    return stream;
+  }
+}
+
+// Per-user volume — add slider to voice card
+function addVolumeSlider(card, peerId) {
+  if (card.querySelector('.vo-user-volume')) return;
+  const slider = document.createElement('input');
+  slider.type = 'range'; slider.min = 0; slider.max = 200; slider.value = 100;
+  slider.className = 'vo-user-volume'; slider.title = 'Громкость';
+  slider.addEventListener('input', () => {
+    const audio = document.getElementById('audio-' + peerId);
+    if (audio) audio.volume = Math.min(slider.value / 100, 2);
+  });
+  card.appendChild(slider);
+}
+
+// Patch addVoiceUser to add volume slider — handled inside addVoiceUser directly

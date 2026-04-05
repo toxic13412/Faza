@@ -439,3 +439,19 @@ body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg-1); colo
 .modal-actions-btn:hover { background: rgba(255,255,255,.14); }
 .modal-actions-btn.primary { background: var(--accent); color: #fff; }
 .modal-actions-btn.primary:hover { background: var(--accent-h); }
+
+/* Voice volume controls */
+.vo-volume-wrap {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.08); border-radius:10px; padding:6px 10px;
+}
+.vo-volume-wrap svg { color:var(--text-m); flex-shrink:0; }
+.vo-volume-slider {
+  width:80px; accent-color:var(--accent); cursor:pointer;
+  height:4px;
+}
+/* Per-user volume slider in voice card */
+.vo-user-volume {
+  width:80px; accent-color:var(--green); cursor:pointer;
+  height:3px; margin-top:4px;
+}
