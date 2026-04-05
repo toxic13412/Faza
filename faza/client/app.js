@@ -1248,7 +1248,22 @@ function showScreenInCard(userId, stream) {
     video = document.createElement('video');
     video.className = 'vo-user-video';
     video.autoplay = true; video.muted = true; video.playsInline = true;
+    // Double click = fullscreen
+    video.addEventListener('dblclick', () => {
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    });
     card.insertBefore(video, card.firstChild);
+
+    // Fullscreen button
+    const fsBtn = document.createElement('button');
+    fsBtn.className = 'vo-fs-btn'; fsBtn.title = 'На весь экран'; fsBtn.innerHTML = '⛶';
+    fsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    });
+    card.appendChild(fsBtn);
   }
   video.srcObject = stream;
   voiceOverlayUsers.classList.add('has-screen');
