@@ -234,64 +234,67 @@ body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg-1); colo
 .dm-header-avatar img { width:100%; height:100%; object-fit:cover; }
 
 /* ===================== MOBILE ===================== */
-@media (max-width:768px) {
-  #app { height:100dvh; overflow:hidden; }
 
-  /* Hide desktop icon rail */
+/* Desktop: hide mobile-only elements */
+.mob-rail,.mob-back-btn,.mob-dm-header,.mob-search-bar,.mob-add-friend-bar,
+.dm-item-time,.mobile-bottom-nav { display:none; }
+.mob-main { display:contents; }
+.sidebar-close-btn { display:none; }
+
+@media (max-width:768px) {
+  /* Base */
+  #app { height:100dvh; overflow:hidden; display:flex; flex-direction:row; }
   .icon-rail { display:none; }
   .profile-panel { display:none !important; }
 
-  /* Mobile layout: server rail + main content */
-  #app { display:flex; flex-direction:row; }
-
-  /* Narrow server/nav rail on left */
+  /* Left rail */
   .mob-rail {
-    width:72px; background:var(--bg-1); display:flex; flex-direction:column;
+    width:64px; background:var(--bg-1); display:flex; flex-direction:column;
     align-items:center; padding:8px 0; gap:6px; flex-shrink:0;
-    height:100dvh; overflow-y:auto; overflow-x:hidden;
+    height:100dvh; overflow-y:auto;
   }
   .mob-rail::-webkit-scrollbar { display:none; }
-  .mob-rail-logo { width:48px; height:48px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:1.3rem; cursor:pointer; transition:border-radius .2s; flex-shrink:0; }
-  .mob-rail-logo:hover,.mob-rail-logo.active { border-radius:16px; }
-  .mob-rail-divider { width:32px; height:2px; background:rgba(255,255,255,.1); border-radius:1px; flex-shrink:0; }
-  .mob-rail-btn { width:48px; height:48px; border-radius:50%; background:var(--bg-3); border:none; color:var(--text-m); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; flex-shrink:0; overflow:hidden; font-size:.75rem; font-weight:700; }
-  .mob-rail-btn:active,.mob-rail-btn.active { border-radius:16px; background:var(--accent); color:#fff; }
+  .mob-rail-logo {
+    width:44px; height:44px; border-radius:50%; background:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem; cursor:pointer; transition:border-radius .2s; flex-shrink:0;
+  }
+  .mob-rail-logo.active { border-radius:14px; }
+  .mob-rail-divider { width:28px; height:2px; background:rgba(255,255,255,.1); border-radius:1px; flex-shrink:0; }
+  .mob-rail-btn {
+    width:44px; height:44px; border-radius:50%; background:var(--bg-3);
+    border:none; color:var(--text-m); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s; flex-shrink:0; overflow:hidden; font-size:.75rem; font-weight:700;
+  }
+  .mob-rail-btn.active { border-radius:14px; background:var(--accent); color:#fff; }
   .mob-rail-btn img { width:100%; height:100%; object-fit:cover; }
 
-  /* Main area = sidebar (DM list) or chat */
-  .mob-main { flex:1; display:flex; flex-direction:column; height:100dvh; overflow:hidden; position:relative; }
+  /* Main wrapper */
+  .mob-main { display:flex; flex:1; flex-direction:column; height:100dvh; overflow:hidden; position:relative; }
 
-  /* Sidebar = DM list, full main area */
+  /* Sidebar — DM list */
   .sidebar {
     position:absolute; inset:0; z-index:10;
     width:100%; background:var(--bg-2);
     display:flex; flex-direction:column;
     transform:translateX(0);
-    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    transition:transform .25s ease;
+    padding-bottom:56px;
   }
   .sidebar.chat-open { transform:translateX(-100%); }
 
-  /* Chat area on top of sidebar */
+  /* Chat area */
   .chat-area {
     position:absolute; inset:0; z-index:20;
     transform:translateX(100%);
-    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    transition:transform .25s ease;
     padding-bottom:0;
   }
   .chat-area.chat-open { transform:translateX(0); }
 
-  /* Back button in chat header */
-  .mob-back-btn {
-    display:flex; align-items:center; justify-content:center;
-    width:32px; height:32px; border-radius:50%; background:none;
-    border:none; color:var(--text-m); cursor:pointer; flex-shrink:0;
-    font-size:1.1rem;
-  }
-
-  /* DM list header */
-  .mob-dm-header {
-    padding:16px 12px 8px; display:flex; flex-direction:column; gap:8px; flex-shrink:0;
-  }
+  /* Mobile DM header */
+  .mob-dm-header { display:flex; flex-direction:column; gap:8px; padding:14px 12px 8px; flex-shrink:0; }
   .mob-dm-title { font-size:1.1rem; font-weight:800; color:var(--text-h); }
   .mob-search-bar {
     display:flex; align-items:center; gap:8px;
@@ -302,23 +305,29 @@ body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg-1); colo
   .mob-search-bar input::placeholder { color:var(--text-m); }
   .mob-add-friend-bar {
     display:flex; align-items:center; justify-content:center; gap:6px;
-    background:var(--bg-4); border-radius:8px; padding:8px 12px;
+    background:var(--bg-4); border-radius:8px; padding:9px 12px;
     cursor:pointer; color:var(--text-m); font-size:.88rem; font-weight:500;
   }
-  .mob-add-friend-bar:active { background:var(--bg-3); }
 
-  /* DM items bigger */
+  /* DM items */
   .dm-item { padding:10px 12px; gap:12px; }
-  .dm-item-avatar { width:44px; height:44px; border-radius:50%; }
+  .dm-item-avatar { width:44px; height:44px; }
   .dm-item-name { font-size:.95rem; }
   .dm-item-preview { font-size:.8rem; }
-  .dm-item-time { font-size:.72rem; color:var(--text-m); margin-left:auto; flex-shrink:0; }
+  .dm-item-time { display:block; font-size:.72rem; color:var(--text-m); margin-left:auto; flex-shrink:0; }
+
+  /* Back button */
+  .mob-back-btn {
+    display:flex; align-items:center; justify-content:center;
+    width:32px; height:32px; border-radius:50%;
+    background:none; border:none; color:var(--text-m); cursor:pointer; flex-shrink:0;
+  }
 
   /* Bottom nav */
   .mobile-bottom-nav {
-    position:absolute; bottom:0; left:0; right:0; height:56px;
+    display:flex; position:absolute; bottom:0; left:0; right:0; height:56px;
     background:var(--bg-2); border-top:1px solid rgba(255,255,255,.07);
-    display:flex; align-items:center; z-index:30;
+    align-items:center; z-index:30;
   }
   .mob-nav-btn {
     flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
@@ -329,117 +338,52 @@ body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg-1); colo
   .mob-nav-btn span { font-size:.62rem; font-weight:600; }
   .mob-nav-btn.active { color:var(--accent); }
 
-  /* Sidebar has bottom nav space */
-  .sidebar { padding-bottom:56px; }
-
-  /* Chat header with back button */
+  /* Chat */
   .chat-header { padding:10px 12px; }
   #channel-title { font-size:.95rem; }
-
-  /* Messages */
-  .messages { padding:10px 10px; }
+  .messages { padding:10px; }
   #msg-input { font-size:.95rem; }
   .message-input-bar { padding:6px 10px 10px; }
 
   /* Voice */
-  .voice-overlay { padding-bottom:0; }
-  .chat-area.in-voice { grid-template-rows:1fr 220px; grid-template-areas:"voice" "chat"; }
+  .chat-area.in-voice { grid-template-rows:1fr 200px; grid-template-areas:"voice" "chat"; }
   .voice-resize-handle { display:none !important; }
   .vo-user { width:120px; height:110px; }
 
-  /* Modals */
+  /* Modals & login */
   .modal-box { width:92vw; min-width:unset; padding:20px 16px; }
   .login-box { width:92vw; min-width:unset; padding:28px 20px; }
-
-  /* Hide sidebar close btn — use back button instead */
-  .sidebar-close-btn { display:none; }
   .user-bar { padding:8px 12px; }
-}
-
-/* Desktop: hide mobile elements */
-.mob-rail { display:none; }
-.mob-main { display:contents; }
-.mob-back-btn { display:none; }
-.mob-dm-header { display:none; }
-.mob-search-bar { display:none; }
-.mob-add-friend-bar { display:none; }
-.dm-item-time { display:none; }
-.mobile-bottom-nav { display:none; }
-.mob-rail-logo,.mob-rail-divider,.mob-rail-btn { display:none; }
-@media (max-width:768px) {
-  .mob-rail { display:flex; }
-  .mob-back-btn { display:flex; }
-  .mob-dm-header { display:flex; }
-  .dm-item-time { display:block; }
-  .mobile-bottom-nav { display:flex; }
-  .mob-rail-logo,.mob-rail-divider,.mob-rail-btn { display:flex; }
-}
-.sidebar-close-btn { display:none; }
-}
-
-/* Bottom nav only on mobile */
-.mobile-bottom-nav { display:none; }
-@media (max-width:768px) {
-  .mobile-bottom-nav { display:flex; }
-}
-
-/* Sidebar close button — hidden on desktop */
-.sidebar-close-btn {
-  display:none; position:absolute; top:12px; right:12px;
-  width:32px; height:32px; border-radius:50%;
-  background:rgba(255,255,255,.1); border:none;
-  color:var(--text); font-size:1rem; cursor:pointer;
-  align-items:center; justify-content:center; z-index:1;
 }
 
 /* Activity / RPC */
 #activity-btn { background:rgba(255,255,255,.06); border:none; cursor:pointer; font-size:.95rem; padding:5px; border-radius:6px; transition:all .15s; flex-shrink:0; }
 #activity-btn:hover { background:rgba(255,255,255,.12); }
-
 .activity-presets { display:flex; gap:6px; flex-wrap:wrap; width:100%; }
 .activity-preset { padding:6px 12px; border-radius:20px; border:1.5px solid rgba(255,255,255,.1); background:none; color:var(--text); font-size:.82rem; cursor:pointer; transition:all .15s; font-family:inherit; }
 .activity-preset:hover { border-color:var(--accent); color:var(--text-h); }
 .activity-preset.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-
-/* Activity badge in online list / DM list */
 .activity-badge { font-size:.72rem; color:var(--text-m); display:flex; align-items:center; gap:3px; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .activity-badge .act-emoji { font-size:.8rem; }
-
-/* Activity in user bar */
 .user-activity { font-size:.68rem; color:var(--text-m); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-
-/* Activity in profile panel */
-.profile-activity { display:flex; align-items:flex-start; gap:8px; padding:10px; background:rgba(255,255,255,.04); border-radius:8px; margin-top:4px; }
-.profile-activity-icon { font-size:1.4rem; flex-shrink:0; }
-.profile-activity-info { flex:1; min-width:0; }
-.profile-activity-type { font-size:.68rem; font-weight:700; color:var(--text-m); text-transform:uppercase; letter-spacing:.5px; }
-.profile-activity-name { font-size:.85rem; font-weight:600; color:var(--text-h); }
-.profile-activity-details { font-size:.78rem; color:var(--text-m); }
 
 /* Ringtone */
 #ringtone-btn { background:rgba(255,255,255,.06); border:none; cursor:pointer; font-size:.95rem; padding:5px; border-radius:6px; transition:all .15s; flex-shrink:0; }
 #ringtone-btn:hover { background:rgba(255,255,255,.12); }
 .ringtone-preview { font-size:.82rem; color:var(--text-m); padding:6px 10px; background:rgba(255,255,255,.05); border-radius:6px; width:100%; text-align:center; }
-.ringtone-options { display:flex; gap:8px; width:100%; }
-.ringtone-opt { flex:1; padding:8px; border-radius:8px; border:1.5px solid rgba(255,255,255,.1); background:none; color:var(--text); font-size:.85rem; cursor:pointer; transition:all .15s; font-family:inherit; }
+.ringtone-options { display:flex; gap:8px; width:100%; flex-wrap:wrap; }
+.ringtone-opt { flex:1; padding:8px; border-radius:8px; border:1.5px solid rgba(255,255,255,.1); background:none; color:var(--text); font-size:.85rem; cursor:pointer; transition:all .15s; font-family:inherit; min-width:80px; }
 .ringtone-opt:hover { border-color:var(--accent); }
 .ringtone-opt.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
-/* Missed call message */
-.msg-missed { color: var(--red) !important; font-style: italic; }
+/* Missed call */
+.msg-missed { color:var(--red) !important; font-style:italic; }
 
 /* Avatar cropper */
 .crop-container { display:flex; flex-direction:column; gap:12px; width:100%; align-items:center; }
-.crop-canvas-wrap {
-  width:240px; height:240px; border-radius:50%; overflow:hidden;
-  position:relative; background:#111; cursor:grab; flex-shrink:0;
-  border:3px solid var(--accent); box-shadow:0 0 0 9999px rgba(0,0,0,.6);
-}
+.crop-canvas-wrap { width:240px; height:240px; border-radius:50%; overflow:hidden; position:relative; background:#111; cursor:grab; flex-shrink:0; border:3px solid var(--accent); }
 .crop-canvas-wrap:active { cursor:grabbing; }
-.crop-canvas-wrap img {
-  position:absolute; transform-origin:center center;
-  user-select:none; pointer-events:none;
-}
+.crop-canvas-wrap img { position:absolute; transform-origin:center center; user-select:none; pointer-events:none; }
 .crop-controls { width:100%; display:flex; flex-direction:column; gap:4px; }
 .crop-label { font-size:.75rem; color:var(--text-m); }
 #crop-scale { width:100%; accent-color:var(--accent); }
