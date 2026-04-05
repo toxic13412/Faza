@@ -381,7 +381,7 @@ body { font-family: 'Inter','Segoe UI',sans-serif; background: var(--bg-1); colo
 
 /* Avatar cropper */
 .crop-container { display:flex; flex-direction:column; gap:12px; width:100%; align-items:center; }
-.crop-canvas-wrap { width:240px; height:240px; border-radius:50%; overflow:hidden; position:relative; background:#111; cursor:grab; flex-shrink:0; border:3px solid var(--accent); }
+.crop-canvas-wrap { width:240px; height:240px; border-radius:8px; overflow:hidden; position:relative; background:#111; cursor:grab; flex-shrink:0; }
 .crop-canvas-wrap:active { cursor:grabbing; }
 .crop-canvas-wrap img { position:absolute; transform-origin:center center; user-select:none; pointer-events:none; }
 .crop-controls { width:100%; display:flex; flex-direction:column; gap:4px; }
