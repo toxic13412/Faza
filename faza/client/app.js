@@ -244,10 +244,11 @@ function openCropper(dataUrl) {
   cropImg.onload = () => {
     cropState.imgW = cropImg.naturalWidth;
     cropState.imgH = cropImg.naturalHeight;
-    // Auto-fit: scale so entire image fits inside the circle
-    const size = 240;
-    const fitScale = size / Math.max(cropState.imgW, cropState.imgH);
-    cropState.scale = Math.max(0.1, Math.min(fitScale, 3));
+    // Auto-fit: scale so entire image fits inside the canvas
+    const canvasW = cropWrap.offsetWidth || 520;
+    const canvasH = 280;
+    const fitScale = Math.min(canvasW / cropState.imgW, canvasH / cropState.imgH);
+    cropState.scale = Math.max(0.1, Math.min(fitScale * 1.2, 3));
     cropScale.value = cropState.scale;
     applyCrop();
   };
@@ -255,12 +256,13 @@ function openCropper(dataUrl) {
 }
 
 function applyCrop() {
-  const size = 240;
+  const canvasW = cropWrap.offsetWidth || 520;
+  const canvasH = 280;
   const s = cropState.scale;
   const w = cropState.imgW * s;
   const h = cropState.imgH * s;
-  const x = cropState.x + (size - w) / 2;
-  const y = cropState.y + (size - h) / 2;
+  const x = cropState.x + (canvasW - w) / 2;
+  const y = cropState.y + (canvasH - h) / 2;
   cropImg.style.width = w + 'px';
   cropImg.style.height = h + 'px';
   cropImg.style.left = x + 'px';
@@ -311,22 +313,37 @@ cropWrap.addEventListener('wheel', e => {
 
 avatarCancel.addEventListener('click', () => avatarModal.classList.add('hidden'));
 
+// Second cancel button
+const avatarCancel2 = document.getElementById('avatar-cancel2');
+if (avatarCancel2) avatarCancel2.addEventListener('click', () => avatarModal.classList.add('hidden'));
+
+// Reset button
+const avatarReset = document.getElementById('avatar-reset');
+if (avatarReset) avatarReset.addEventListener('click', () => {
+  cropState.x = 0; cropState.y = 0; cropState.scale = 1; cropScale.value = 1;
+  applyCrop();
+});
+
 avatarConfirm.addEventListener('click', () => {
-  // Render cropped circle to canvas
-  const size = 128;
+  const circleSize = 200;
+  const canvasW = cropWrap.offsetWidth || 520;
+  const canvasH = 280;
   const canvas = document.createElement('canvas');
-  canvas.width = size; canvas.height = size;
+  canvas.width = 128; canvas.height = 128;
   const ctx = canvas.getContext('2d');
-  ctx.beginPath(); ctx.arc(size/2, size/2, size/2, 0, Math.PI*2); ctx.clip();
-  const displaySize = 240;
+  ctx.beginPath(); ctx.arc(64, 64, 64, 0, Math.PI * 2); ctx.clip();
   const s = cropState.scale;
-  const w = cropState.imgW * s;
-  const h = cropState.imgH * s;
-  const x = cropState.x + (displaySize - w) / 2;
-  const y = cropState.y + (displaySize - h) / 2;
-  const ratio = size / displaySize;
-  ctx.drawImage(cropImg, x * ratio, y * ratio, w * ratio, h * ratio);
-  pendingAvatar = canvas.toDataURL('image/jpeg', 0.85);
+  const imgW = cropState.imgW * s;
+  const imgH = cropState.imgH * s;
+  const imgX = cropState.x + (canvasW - imgW) / 2;
+  const imgY = cropState.y + (canvasH - imgH) / 2;
+  // Circle center in canvas coords
+  const cx = canvasW / 2;
+  const cy = canvasH / 2;
+  const r = circleSize / 2;
+  const ratio = 128 / circleSize;
+  ctx.drawImage(cropImg, (imgX - (cx - r)) * ratio, (imgY - (cy - r)) * ratio, imgW * ratio, imgH * ratio);
+  pendingAvatar = canvas.toDataURL('image/jpeg', 0.9);
   myAvatar = pendingAvatar;
   localStorage.setItem('faza_avatar_' + username, myAvatar);
   setAvatarEl(userAvatarEl, username, myAvatar);
