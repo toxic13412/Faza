@@ -636,6 +636,16 @@ function createPeerConnection(peerId) {
   peers[peerId] = pc;
   if (localStream) localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
   pc.onicecandidate = ({ candidate }) => { if (candidate) socket.emit('ice', { to: peerId, candidate }); };
+
+  // Auto renegotiation when tracks added (e.g. screen share)
+  pc.onnegotiationneeded = async () => {
+    try {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      socket.emit('offer', { to: peerId, offer });
+    } catch {}
+  };
+
   pc.ontrack = ({ track, streams }) => {
     if (track.kind === 'video') {
       showScreenInCard(peerId, streams[0]);
@@ -1179,15 +1189,7 @@ async function startScreenShare() {
 
   // Stop when user clicks "stop sharing" in browser
   screenTrack.addEventListener('ended', stopScreenShare);
-
-  // Notify peers via renegotiation
-  Object.entries(peers).forEach(async ([peerId, pc]) => {
-    try {
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      socket.emit('offer', { to: peerId, offer });
-    } catch {}
-  });
+  // onnegotiationneeded handles renegotiation automatically
 }
 
 function stopScreenShare() {
