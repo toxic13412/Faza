@@ -244,6 +244,11 @@ function openCropper(dataUrl) {
   cropImg.onload = () => {
     cropState.imgW = cropImg.naturalWidth;
     cropState.imgH = cropImg.naturalHeight;
+    // Auto-fit: scale so image fills the circle
+    const size = 240;
+    const fitScale = size / Math.min(cropState.imgW, cropState.imgH);
+    cropState.scale = Math.max(0.5, Math.min(fitScale, 3));
+    cropScale.value = cropState.scale;
     applyCrop();
   };
   avatarModal.classList.remove('hidden');
