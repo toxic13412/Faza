@@ -549,23 +549,35 @@ voiceDenoiseBtn.addEventListener('click', () => {
 });
 
 function buildDenoiseChain(stream) {
-  const ac = getAudioCtx();
-  const source = ac.createMediaStreamSource(stream);
-  const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 100;
-  const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 8000;
-  const comp = ac.createDynamicsCompressor();
-  comp.threshold.value = -40; comp.knee.value = 10; comp.ratio.value = 6;
-  comp.attack.value = 0.003; comp.release.value = 0.1;
-  const dest = ac.createMediaStreamDestination();
-  source.connect(hp); hp.connect(lp); lp.connect(comp); comp.connect(dest);
-  denoiseNodes = { source };
-  return dest.stream;
+  // Not used anymore — browser native noise suppression is better
+  return stream;
 }
 function applyDenoise() {
   if (!localStream) return;
-  const track = denoiseEnabled ? buildDenoiseChain(localStream).getAudioTracks()[0] : localStream.getAudioTracks()[0];
-  Object.values(peers).forEach(pc => { const s = pc.getSenders().find(s => s.track?.kind === 'audio'); if (s) s.replaceTrack(track); });
-  if (!denoiseEnabled && denoiseNodes) { denoiseNodes.source.disconnect(); denoiseNodes = null; }
+  // Restart stream with updated noise suppression setting
+  const constraints = {
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: denoiseEnabled,
+      autoGainControl: true,
+      sampleRate: 48000
+    },
+    video: false
+  };
+  navigator.mediaDevices.getUserMedia(constraints).then(newStream => {
+    const newTrack = newStream.getAudioTracks()[0];
+    // Replace track in all peer connections
+    Object.values(peers).forEach(pc => {
+      const sender = pc.getSenders().find(s => s.track?.kind === 'audio');
+      if (sender) sender.replaceTrack(newTrack);
+    });
+    // Stop old tracks and replace stream
+    localStream.getAudioTracks().forEach(t => t.stop());
+    localStream = newStream;
+    // Restart speaking monitor
+    stopMonitoring('me');
+    monitorSpeaking(localStream, 'me');
+  }).catch(() => {});
 }
 
 socket.on('voicePeers', async ({ peers: existingPeers }) => {
@@ -1035,7 +1047,15 @@ async function joinCallRoom(roomId) {
 async function initCallStream() {
   if (localStream) return true;
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    localStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        sampleRate: 48000
+      },
+      video: false
+    });
     return true;
   } catch (e) {
     showToast('Нет доступа к микрофону: ' + e.message, 'error');
