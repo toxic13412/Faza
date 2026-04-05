@@ -1182,8 +1182,21 @@ voiceScreenBtn.addEventListener('click', async () => {
 });
 
 async function startScreenShare() {
+  // Ask quality before starting
+  const quality = await showScreenQualityPicker();
+  if (!quality) return; // cancelled
+
+  const constraints = {
+    video: {
+      frameRate: quality.fps,
+      width: { ideal: quality.width },
+      height: { ideal: quality.height }
+    },
+    audio: false
+  };
+
   try {
-    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+    screenStream = await navigator.mediaDevices.getDisplayMedia(constraints);
   } catch (e) {
     showToast('Нет доступа к экрану', 'error'); return;
   }
@@ -1720,3 +1733,52 @@ function addVolumeSlider(card, peerId) {
 }
 
 // Patch addVoiceUser to add volume slider — handled inside addVoiceUser directly
+
+// ---- Screen share quality picker ----
+function showScreenQualityPicker() {
+  return new Promise(resolve => {
+    // Remove existing
+    document.getElementById('screen-quality-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'screen-quality-modal';
+    modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);`;
+
+    const box = document.createElement('div');
+    box.style.cssText = `background:var(--bg-2);border-radius:14px;padding:24px;min-width:300px;display:flex;flex-direction:column;gap:16px;border:1px solid rgba(255,255,255,.07);`;
+
+    const title = document.createElement('div');
+    title.style.cssText = 'font-weight:700;color:var(--text-h);font-size:1rem;';
+    title.textContent = '🖥️ Качество демонстрации';
+
+    const qualities = [
+      { label: '720p 30fps', width: 1280, height: 720, fps: 30 },
+      { label: '1080p 30fps', width: 1920, height: 1080, fps: 30 },
+      { label: '1080p 60fps', width: 1920, height: 1080, fps: 60 },
+      { label: '480p 15fps (экономия трафика)', width: 854, height: 480, fps: 15 },
+    ];
+
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+
+    qualities.forEach((q, i) => {
+      const btn = document.createElement('button');
+      btn.style.cssText = `padding:10px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.1);background:none;color:var(--text);font-size:.9rem;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s;`;
+      btn.textContent = q.label;
+      if (i === 0) { btn.style.borderColor = 'var(--accent)'; btn.style.color = 'var(--text-h)'; }
+      btn.addEventListener('mouseenter', () => { btn.style.background = 'rgba(255,255,255,.06)'; });
+      btn.addEventListener('mouseleave', () => { btn.style.background = 'none'; });
+      btn.addEventListener('click', () => { modal.remove(); resolve(q); });
+      grid.appendChild(btn);
+    });
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.style.cssText = 'padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:var(--text-m);font-size:.88rem;cursor:pointer;font-family:inherit;';
+    cancelBtn.textContent = 'Отмена';
+    cancelBtn.addEventListener('click', () => { modal.remove(); resolve(null); });
+
+    box.append(title, grid, cancelBtn);
+    modal.appendChild(box);
+    document.body.appendChild(modal);
+  });
+}
